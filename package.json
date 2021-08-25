@@ -3,7 +3,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "antd": "4.16.12",
+    "antd": "4.16.13",
     "papaparse": "5.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
