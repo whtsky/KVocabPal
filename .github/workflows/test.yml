@@ -1,0 +1,32 @@
+on:
+  push:
+  pull_request:
+name: Main workflow
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - run: yarn
+      - run: yarn prettier -c .
+      - run: yarn eslint .
+      - run: yarn
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - run: yarn
+      - run: yarn build
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v8
+        with:
+          configPath: './.github/lighthouserc.json'
+          temporaryPublicStorage: true

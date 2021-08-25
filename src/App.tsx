@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import initSqlJs, { SqlJsStatic } from 'sql.js'
+import React, { useState, useEffect, lazy, Suspense } from 'react'
+import type { SqlJsStatic } from 'sql.js'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import sqlWasm from '!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm'
-import { VocabViewer } from './VocabViewer'
 import { getVocabModelsFromQueryResult, Vocab } from './model'
-import { Button, Col, Divider, Row } from 'antd'
+import { Button, Col, Divider, Row, Skeleton, Steps } from 'antd'
 
-import { UploadOutlined } from '@ant-design/icons'
+import { DownloadOutlined, FileSearchOutlined, ImportOutlined, SmileOutlined, UsbOutlined } from '@ant-design/icons'
+
+const { Step } = Steps
+
 const query = `
 select WORDS.stem, WORDS.word, LOOKUPS.usage, BOOK_INFO.title, LOOKUPS.timestamp
 from LOOKUPS left join WORDS
@@ -16,16 +18,18 @@ left join BOOK_INFO
 on BOOK_INFO.id = LOOKUPS.book_key
 order by LOOKUPS.timestamp DESC`
 
+const VocabViewer = lazy(() => import(/* webpackPrefetch: true */ /*webpackChunkName: 'viewer'*/ './VocabViewer'))
+
 export default function App() {
   const [vocabs, setVocabs] = useState<Vocab[] | null>(null)
   const [SQL, setSQL] = useState<SqlJsStatic | null>(null)
   const [error, setError] = useState<any>(null)
 
   useEffect(() => {
-    initSqlJs({ locateFile: () => sqlWasm }).then(
-      (SQL) => setSQL(SQL),
-      (err) => setError(err),
-    )
+    const onError = (err: any) => setError(err)
+    import(/* webpackPrefetch: true */ /*webpackChunkName: 'sql'*/ 'sql.js').then(({ default: initSqlJs }) => {
+      initSqlJs({ locateFile: () => sqlWasm }).then((SQL) => setSQL(SQL), onError)
+    }, onError)
   }, [setSQL])
 
   const uploadFileInputRef = React.createRef<HTMLInputElement>()
@@ -57,32 +61,78 @@ export default function App() {
 
   if (SQL == null) return <pre>loading</pre>
 
+  const uploadStatus = vocabs === null ? 'process' : 'finish'
+  const downloadAndProcessStatus = vocabs === null ? 'wait' : 'process'
+
   return (
     <div>
       <Row>
         <Col span={16} offset={4}>
-          <Row style={{ marginTop: 10 }} justify="space-between" align="middle">
+          <Row style={{ marginTop: 10, marginBottom: 5 }} justify="space-between" align="middle">
             <a href="/" style={{ color: '#000', fontSize: '2em' }}>
               KVocabPal
             </a>
             <a href="https://github.com/whtsky/KVocabPal">GitHub</a>
           </Row>
+          <p style={{ fontSize: '1.1em' }}>
+            View & export your Kindle's vocabulary data, so you can process them in Excel or import them into{' '}
+            <a href="https://apps.ankiweb.net/">Anki</a>.
+          </p>
           <Divider orientation="left" plain>
-            Choose Kindle Vocab file
+            Instructions
           </Divider>
           <input ref={uploadFileInputRef} onChange={onFileChange} type="file" style={{ display: 'none' }} />
-          <Button onClick={onUploadButtonClick} icon={<UploadOutlined />}>
-            Choose your vocab.db
-          </Button>
+
+          <Steps direction="vertical">
+            <Step status={uploadStatus} icon={<UsbOutlined />} title="Connect Kindle to your computer" />
+            <Step
+              status={uploadStatus}
+              icon={<FileSearchOutlined />}
+              title="Find vocab.db file from your Kindle"
+              description=""
+            />
+            <Step
+              icon={<ImportOutlined />}
+              title={
+                <Button onClick={onUploadButtonClick} loading={SQL === null}>
+                  Choose your vocab.db
+                </Button>
+              }
+              status={uploadStatus}
+            />
+            <Step
+              icon={<DownloadOutlined />}
+              title="Download CSV using the button below"
+              status={downloadAndProcessStatus}
+            />
+            <Step
+              icon={<SmileOutlined />}
+              title="Open CSV using Excel, or import it in Anki"
+              description={
+                <div>
+                  You can use Anki plugins like <a href="https://ankiweb.net/shared/info/1807206748">FastWordQuery</a>{' '}
+                  to add word definitions.
+                </div>
+              }
+              status={downloadAndProcessStatus}
+            />
+          </Steps>
+
           {error && <pre>{error.toString()}</pre>}
           {vocabs && (
             <>
               <Divider orientation="left" plain>
                 Your Kindle Vocabulary
               </Divider>
-              <VocabViewer vocabs={vocabs} />
+              <Suspense fallback={<Skeleton />}>
+                <VocabViewer vocabs={vocabs} />
+              </Suspense>
             </>
           )}
+          <p style={{ textAlign: 'center', fontSize: '0.9em' }}>
+            <a href="https://github.com/whtsky/KVocabPal">KVocabPal</a> is created by{' '}
+            <a href="https://github.com/whtsky/">whtsky</a>
+          </p>
         </Col>
       </Row>
     </div>

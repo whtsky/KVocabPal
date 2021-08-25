@@ -21,7 +21,7 @@ function download(filename: string, text: string) {
 
 const defaultShowFields = ['stem', 'usage', 'title']
 
-export function VocabViewer({ vocabs }: { vocabs: Vocab[] }) {
+export default function VocabViewer({ vocabs }: { vocabs: Vocab[] }) {
   const [boldWord, setBoldWord] = React.useState(true)
   const [showFields, setShowFields] = React.useState(defaultShowFields)
 
