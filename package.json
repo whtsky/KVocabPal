@@ -10,7 +10,7 @@
     "sql.js": "^1.6.1"
   },
   "devDependencies": {
-    "@craco/craco": "^6.4.2",
+    "@craco/craco": "^6.4.3",
     "@types/papaparse": "5.3.1",
     "@types/react": "17.0.37",
     "@types/react-dom": "17.0.11",
