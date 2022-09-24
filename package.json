@@ -14,7 +14,7 @@
     "@types/papaparse": "5.3.1",
     "@types/react": "17.0.50",
     "@types/react-dom": "17.0.17",
-    "@types/sql.js": "1.4.3",
+    "@types/sql.js": "1.4.4",
     "@whtsky/prettier-config": "1.0.1",
     "craco-antd": "1.19.0",
     "husky": "7.0.4",
