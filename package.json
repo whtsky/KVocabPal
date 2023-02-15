@@ -13,7 +13,7 @@
     "@craco/craco": "^6.4.5",
     "@types/papaparse": "5.3.1",
     "@types/react": "17.0.53",
-    "@types/react-dom": "17.0.18",
+    "@types/react-dom": "17.0.19",
     "@types/sql.js": "1.4.4",
     "@whtsky/prettier-config": "1.0.1",
     "craco-antd": "1.19.0",
