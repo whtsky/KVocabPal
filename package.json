@@ -16,7 +16,7 @@
     "@types/react-dom": "17.0.19",
     "@types/sql.js": "1.4.4",
     "@whtsky/prettier-config": "1.0.1",
-    "craco-antd": "1.19.0",
+    "craco-antd": "2.0.0",
     "husky": "7.0.4",
     "prettier": "2.8.4",
     "pretty-quick": "3.1.3",
