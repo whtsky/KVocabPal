@@ -17,7 +17,7 @@
     "@types/sql.js": "1.4.4",
     "@whtsky/prettier-config": "1.0.1",
     "craco-antd": "1.19.0",
-    "husky": "7.0.4",
+    "husky": "8.0.3",
     "prettier": "2.8.4",
     "pretty-quick": "3.1.3",
     "react-scripts": "^4.0.3",
