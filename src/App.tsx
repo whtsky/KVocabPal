@@ -130,8 +130,8 @@ export default function App() {
             </>
           )}
           <p style={{ textAlign: 'center', fontSize: '0.9em' }}>
-            <a href="https://github.com/whtsky/KVocabPal">KVocabPal</a> is created by{' '}
-            <a href="https://github.com/whtsky/">whtsky</a>
+            <a href="https://kvocabpal.whtsky.me/">KVocabPal</a> is created by{' '}
+            <a href="https://blog.whtsky.me/">whtsky</a>
           </p>
         </Col>
       </Row>
